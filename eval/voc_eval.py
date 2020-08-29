@@ -9,6 +9,7 @@ import os
 import pickle
 import numpy as np
 
+
 def parse_rec(filename):
     """ Parse a PASCAL VOC xml file """
     tree = ET.parse(filename)
@@ -27,6 +28,7 @@ def parse_rec(filename):
         objects.append(obj_struct)
 
     return objects
+
 
 def voc_ap(rec, prec, use_07_metric=False):
     """ ap = voc_ap(rec, prec, [use_07_metric])
@@ -60,6 +62,7 @@ def voc_ap(rec, prec, use_07_metric=False):
         # and sum (\Delta recall) * prec
         ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])
     return ap
+
 
 def voc_eval(detpath,
              annopath,
@@ -108,10 +111,10 @@ def voc_eval(detpath,
         for i, imagename in enumerate(imagenames):
             recs[imagename] = parse_rec(annopath.format(imagename))
             if i % 100 == 0:
-                print ('Reading annotation for {:d}/{:d}'.format(
+                print('Reading annotation for {:d}/{:d}'.format(
                     i + 1, len(imagenames)))
         # save
-        print ('Saving cached annotations to {:s}'.format(cachefile))
+        print('Saving cached annotations to {:s}'.format(cachefile))
         with open(cachefile, 'wb') as f:
             pickle.dump(recs, f)
     else:
@@ -199,5 +202,3 @@ def voc_eval(detpath,
         return rec, prec, ap
     else:
         return 0, 0, 0
-
-

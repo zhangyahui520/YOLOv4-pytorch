@@ -165,7 +165,7 @@ class Evaluator(object):
         filename = os.path.join(self.pred_result_path, 'comp4_det_test_{:s}.txt')
         cachedir = os.path.join(self.pred_result_path, 'cache')
         # annopath = os.path.join(self.val_data_path, 'Annotations', '{:s}.xml')
-        annopath = os.path.join(self.val_data_path, 'Annotations\\' + '{:s}.xml')
+        annopath = os.path.join(self.val_data_path, 'Annotations/' + '{:s}.xml')
         imagesetfile = os.path.join(self.val_data_path,  'ImageSets', 'Main', 'test.txt')
         APs = {}
         Recalls = {}
