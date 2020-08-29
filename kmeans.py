@@ -3,9 +3,10 @@ import numpy as np
 
 class YOLO_Kmeans:
 
-    def __init__(self, cluster_number, filename):
+    def __init__(self, cluster_number, filename, anchors_name):
         self.cluster_number = cluster_number
         self.filename = filename
+        self.anchors_name = anchors_name
 
     def iou(self, boxes, clusters):  # 1 box -> k clusters
         n = boxes.shape[0]
@@ -40,8 +41,7 @@ class YOLO_Kmeans:
         distances = np.empty((box_number, k))
         last_nearest = np.zeros((box_number,))
         np.random.seed()
-        clusters = boxes[np.random.choice(
-            box_number, k, replace=False)]  # init k clusters
+        clusters = boxes[np.random.choice(box_number, k, replace=False)]  # init k clusters
         while True:
 
             distances = 1 - self.iou(boxes, clusters)
@@ -57,8 +57,8 @@ class YOLO_Kmeans:
 
         return clusters
 
-    def result2txt(self, data):
-        f = open("yolo_anchors.txt", 'w')
+    def result2txt(self, data, anchors_name):
+        f = open("data/anchors/{}.txt".format(anchors_name), 'w')
         row = np.shape(data)[0]
         for i in range(row):
             if i == 0:
@@ -88,7 +88,7 @@ class YOLO_Kmeans:
         all_boxes = self.txt2boxes()
         result = self.kmeans(all_boxes, k=self.cluster_number)
         result = result[np.lexsort(result.T[0, None])]
-        self.result2txt(result)
+        self.result2txt(result, self.anchors_name)
         print("K anchors:\n {}".format(result))
         print("Accuracy: {:.2f}%".format(
             self.avg_iou(all_boxes, result) * 100))
@@ -96,6 +96,7 @@ class YOLO_Kmeans:
 
 if __name__ == "__main__":
     cluster_number = 9
-    filename = "2007_train.txt"
-    kmeans = YOLO_Kmeans(cluster_number, filename)
+    filename = '2007_train.txt'
+    anchors_name = '2020_99_formal_anchors'
+    kmeans = YOLO_Kmeans(cluster_number, filename, anchors_name)
     kmeans.txt2clusters()

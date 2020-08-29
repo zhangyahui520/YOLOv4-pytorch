@@ -16,12 +16,17 @@ from tensorboardX import SummaryWriter
 import config.yolov4_config as cfg
 from utils import cosine_lr_scheduler
 from utils.log import Logger
-from apex import amp
+# from apex import amp
 from eval_coco import *
 from eval.cocoapi_evaluator import COCOAPIEvaluator
 # import os
 # os.environ["CUDA_VISIBLE_DEVICES"]='2'
 
+'''
+ python -u train.py --weight_path weight/yolov4.weights --gpu_id 0
+
+取消掉混合精度
+'''
 
 def detection_collate(batch):
     targets = []
@@ -105,7 +110,7 @@ class Trainer(object):
         logger.info(self.yolov4)
         logger.info("Train datasets number is : {}".format(len(self.train_dataset)))
 
-        if self.fp_16: self.yolov4, self.optimizer = amp.initialize(self.yolov4, self.optimizer, opt_level='O1', verbosity=0)
+        # if self.fp_16: self.yolov4, self.optimizer = amp.initialize(self.yolov4, self.optimizer, opt_level='O1', verbosity=0)
         logger.info("        =======  start  training   ======     ")
         for epoch in range(self.start_epoch, self.epochs):
             start = time.time()
@@ -130,8 +135,9 @@ class Trainer(object):
                                                   label_lbbox, sbboxes, mbboxes, lbboxes)
 
                 if self.fp_16:
-                    with amp.scale_loss(loss, self.optimizer) as scaled_loss:
-                        scaled_loss.backward()
+                    # with amp.scale_loss(loss, self.optimizer) as scaled_loss:
+                    #     scaled_loss.backward()
+                    pass
                 else:
                     loss.backward()
                 # Accumulate gradient for x batches before optimizing

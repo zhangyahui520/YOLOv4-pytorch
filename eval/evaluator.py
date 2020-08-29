@@ -19,7 +19,7 @@ class Evaluator(object):
         else:
             assert print('dataset must be VOC or COCO')
         self.pred_result_path = os.path.join(cfg.PROJECT_PATH, 'pred_result')
-        self.val_data_path = os.path.join(cfg.DATA_PATH, 'VOCtest-2007', 'VOCdevkit', 'VOC2007')
+        self.val_data_path = os.path.join(cfg.DATA_PATH, 'VOCdevkit', 'VOC2007')
         self.conf_thresh = cfg.VAL["CONF_THRESH"]
         self.nms_thresh = cfg.VAL["NMS_THRESH"]
         self.val_shape =  cfg.VAL["TEST_IMG_SIZE"]
