@@ -40,15 +40,15 @@ VAL = {
     "Visual": True
 }
 
-Customer_DATA = {"NUM": 1,  # your dataset number
+VOC_DATA = {"NUM": 3,  # your dataset number
                  "CLASSES": ['multi_signs', 'non_traffic_sign', 'window_shielding'],  # your dataset class
                  }
 
-VOC_DATA = {"NUM": 20, "CLASSES": ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
-                                   'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse',
-                                   'motorbike', 'person', 'pottedplant', 'sheep', 'sofa',
-                                   'train', 'tvmonitor'],
-            }
+# VOC_DATA = {"NUM": 20, "CLASSES": ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
+#                                    'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse',
+#                                    'motorbike', 'person', 'pottedplant', 'sheep', 'sofa',
+#                                    'train', 'tvmonitor'],
+#             }
 
 COCO_DATA = {"NUM": 80, "CLASSES": ['person',
                                     'bicycle',
