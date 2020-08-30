@@ -9,7 +9,10 @@ import config.yolov4_config as cfg
 from torch.utils.data import DataLoader
 import utils.datasets as data
 import time
+
 current_milli_time = lambda: int(round(time.time() * 1000))
+
+
 class Evaluator(object):
     def __init__(self, model, showatt):
         if cfg.TRAIN["DATA_TYPE"] == 'VOC':
@@ -22,7 +25,7 @@ class Evaluator(object):
         self.val_data_path = os.path.join(cfg.DATA_PATH, 'VOCdevkit', 'VOC2007')
         self.conf_thresh = cfg.VAL["CONF_THRESH"]
         self.nms_thresh = cfg.VAL["NMS_THRESH"]
-        self.val_shape =  cfg.VAL["TEST_IMG_SIZE"]
+        self.val_shape = cfg.VAL["TEST_IMG_SIZE"]
         self.model = model
         self.device = next(model.parameters()).device
         self.__visual_imgs = 0
@@ -30,7 +33,7 @@ class Evaluator(object):
         self.inference_time = 0.
 
     def APs_voc(self, multi_test=False, flip_test=False):
-        img_inds_file = os.path.join(self.val_data_path,  'ImageSets', 'Main', 'test.txt')
+        img_inds_file = os.path.join(self.val_data_path, 'ImageSets', 'Main', 'test.txt')
         with open(img_inds_file, 'r') as f:
             lines = f.readlines()
             img_inds = [line.strip() for line in lines]
@@ -44,7 +47,7 @@ class Evaluator(object):
         os.mkdir(self.pred_result_path)
         print('val img size is {}'.format(self.val_shape))
         for img_ind in tqdm(img_inds):
-            img_path = os.path.join(self.val_data_path, 'JPEGImages', img_ind+'.jpg')
+            img_path = os.path.join(self.val_data_path, 'JPEGImages', img_ind + '.jpg')
             img = cv2.imread(img_path)
             bboxes_prd = self.get_bbox(img, multi_test, flip_test)
 
@@ -53,7 +56,6 @@ class Evaluator(object):
                 coor = np.array(bbox[:4], dtype=np.int32)
                 score = bbox[4]
                 class_ind = int(bbox[5])
-
                 class_name = self.classes[class_ind]
                 score = '%.4f' % score
                 xmin, ymin, xmax, ymax = map(str, coor)
@@ -71,7 +73,7 @@ class Evaluator(object):
             test_input_sizes = range(320, 640, 96)
             bboxes_list = []
             for test_input_size in test_input_sizes:
-                valid_scale =(0, np.inf)
+                valid_scale = (0, np.inf)
                 bboxes_list.append(self.__predict(img, test_input_size, valid_scale))
                 if flip_test:
                     bboxes_flip = self.__predict(img[:, ::-1], test_input_size, valid_scale)
@@ -93,8 +95,10 @@ class Evaluator(object):
         self.model.eval()
         with torch.no_grad():
             start_time = current_milli_time()
-            if self.showatt: _, p_d, beta = self.model(img)
-            else: _, p_d = self.model(img)
+            if self.showatt:
+                _, p_d, beta = self.model(img)
+            else:
+                _, p_d = self.model(img)
             self.inference_time += (current_milli_time() - start_time)
         pred_bbox = p_d.squeeze().cpu().numpy()
         bboxes = self.__convert_pred(pred_bbox, test_shape, (org_h, org_w), valid_scale)
@@ -108,7 +112,6 @@ class Evaluator(object):
     def __get_img_tensor(self, img, test_shape):
         img = Resize((test_shape, test_shape), correct_box=False)(img, None).transpose(2, 0, 1)
         return torch.from_numpy(img[np.newaxis, ...]).float()
-
 
     def __convert_pred(self, pred_bbox, test_input_size, org_img_shape, valid_scale):
         """
@@ -151,9 +154,7 @@ class Evaluator(object):
         classes = classes[mask]
 
         bboxes = np.concatenate([coors, scores[:, np.newaxis], classes[:, np.newaxis]], axis=-1)
-
         return bboxes
-
 
     def __calc_APs(self, iou_thresh=0.5, use_07_metric=False):
         """
@@ -166,7 +167,7 @@ class Evaluator(object):
         cachedir = os.path.join(self.pred_result_path, 'cache')
         # annopath = os.path.join(self.val_data_path, 'Annotations', '{:s}.xml')
         annopath = os.path.join(self.val_data_path, 'Annotations/' + '{:s}.xml')
-        imagesetfile = os.path.join(self.val_data_path,  'ImageSets', 'Main', 'test.txt')
+        imagesetfile = os.path.join(self.val_data_path, 'ImageSets', 'Main', 'test.txt')
         APs = {}
         Recalls = {}
         Precisions = {}
