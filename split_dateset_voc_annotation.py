@@ -20,7 +20,7 @@ from os import getcwd
 from config import yolov4_config as cfg
 from devide_dataset import split_dataset
 
-classes = cfg.Customer_DATA['CLASSES']
+classes = cfg.VOC_DATA['CLASSES']
 
 def convert_annotation(year, image_id, list_file):
     in_file = open('VOCdevkit/VOC%s/Annotations/%s.xml' % (year, image_id), 'rb')
